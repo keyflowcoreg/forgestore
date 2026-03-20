@@ -1,6 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { TrustBar } from "@/components/TrustBar";
+import { FAQAccordion } from "@/components/FAQAccordion";
+import { SocialShare } from "@/components/SocialShare";
+import EmailCapture from "@/components/EmailCapture";
 
 const products = [
   {
@@ -106,11 +110,44 @@ const accentMap: Record<string, { border: string; bg: string; text: string; glow
   },
 };
 
-const stats = [
-  { value: "8", label: "Products Live" },
-  { value: "$0", label: "Platform Fees" },
-  { value: "Enterprise", label: "Grade" },
-  { value: "AI", label: "Built With" },
+const trustStats = [
+  { label: "Products", value: 8 },
+  { label: "Repos", value: 9 },
+  { label: "Commits", value: 90, suffix: "+" },
+  { label: "Platform Fees", value: 0, prefix: "$" },
+];
+
+const faqItems = [
+  {
+    question: "What is AI Business Factory?",
+    answer:
+      "AI Business Factory is an ecosystem of 8 developer tools built by AI agents. Each tool solves a specific problem — from generating AI coding rules to creating OG images and landing pages. All tools are live on Vercel and available individually or as a bundle.",
+  },
+  {
+    question: "How do payments work?",
+    answer:
+      "Payments are processed securely through Stripe. Each product can be purchased individually, or you can save 40% with the full ecosystem bundle at $149. All purchases are one-time payments with lifetime access and future updates included.",
+  },
+  {
+    question: "What tech stack is used?",
+    answer:
+      "Every product is built with Next.js (App Router), TypeScript, Tailwind CSS, and deployed on Vercel. Some products use additional libraries like framer-motion for animations, Stripe for payments, and various AI APIs for core functionality.",
+  },
+  {
+    question: "Are there refunds?",
+    answer:
+      "Due to the digital nature of our products, all sales are final once a product has been delivered. We encourage you to explore the free tiers and demos available for most products before purchasing. If you experience technical issues, contact our support team.",
+  },
+  {
+    question: "Can I use these tools for commercial projects?",
+    answer:
+      "Yes. All purchased tools come with a commercial license. You can use them in client projects, SaaS products, and any commercial application. The license is per-seat, so each developer needs their own license.",
+  },
+  {
+    question: "Is AIToolsRadar really free?",
+    answer:
+      "Yes, AIToolsRadar is completely free. It compares 40+ AI tools across categories like LLMs, code assistants, image generators, and more. No account required, no hidden paywalls.",
+  },
 ];
 
 const fadeUp = {
@@ -129,28 +166,38 @@ const stagger = {
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-zinc-950">
-      {/* JSON-LD */}
+      {/* JSON-LD Product Offers */}
       <script
         type="application/ld+json"
         suppressHydrationWarning
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "Organization",
+            "@type": "WebPage",
             name: "AI Business Factory",
             url: "https://forgestore.vercel.app",
             description:
               "8 developer tools. One ecosystem. Built by AI agents.",
-            sameAs: [],
-            offers: products.map((p) => ({
-              "@type": "Offer",
-              name: p.name,
-              description: p.desc,
-              price: p.price === "Free" ? "0" : p.price.replace("$", ""),
-              priceCurrency: "USD",
-              url: p.url,
-              availability: "https://schema.org/InStock",
-            })),
+            mainEntity: {
+              "@type": "ItemList",
+              numberOfItems: 8,
+              itemListElement: products.map((p, i) => ({
+                "@type": "ListItem",
+                position: i + 1,
+                item: {
+                  "@type": "Product",
+                  name: p.name,
+                  description: p.desc,
+                  url: p.url,
+                  offers: {
+                    "@type": "Offer",
+                    price: p.price === "Free" ? "0" : p.price.replace("$", ""),
+                    priceCurrency: "USD",
+                    availability: "https://schema.org/InStock",
+                  },
+                },
+              })),
+            },
           }),
         }}
       />
@@ -167,6 +214,12 @@ export default function Home() {
               className="hidden sm:inline text-sm text-zinc-400 hover:text-zinc-100 transition-colors"
             >
               Products
+            </a>
+            <a
+              href="/about"
+              className="hidden sm:inline text-sm text-zinc-400 hover:text-zinc-100 transition-colors"
+            >
+              About
             </a>
             <a
               href="#bundle"
@@ -222,26 +275,13 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Stats Bar */}
+        {/* TrustBar */}
         <section className="border-y border-zinc-800/50 bg-zinc-900/30">
-          <div className="mx-auto max-w-6xl px-6 py-10">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-              {stats.map((stat, i) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.3 + i * 0.1 }}
-                >
-                  <p className="text-3xl md:text-4xl font-bold text-zinc-100">
-                    {stat.value}
-                  </p>
-                  <p className="text-sm text-zinc-500 mt-1.5 font-medium tracking-wide uppercase">
-                    {stat.label}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
+          <div className="mx-auto max-w-6xl px-6">
+            <TrustBar
+              items={trustStats}
+              heading="Trusted by developers worldwide"
+            />
           </div>
         </section>
 
@@ -368,12 +408,99 @@ export default function Home() {
             </motion.div>
           </div>
         </section>
+
+        {/* FAQ */}
+        <section className="mx-auto max-w-6xl px-6 py-24">
+          <FAQAccordion items={faqItems} />
+        </section>
+
+        {/* Newsletter + Social */}
+        <section className="border-t border-zinc-800/50 bg-zinc-900/20">
+          <div className="mx-auto max-w-4xl px-6 py-24">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+              <div>
+                <EmailCapture
+                  heading="Join the AI Business Factory newsletter"
+                  description="Weekly updates on new tools, features, and developer insights."
+                  buttonText="Subscribe"
+                  accent="purple"
+                />
+              </div>
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-white">Share the ecosystem</h3>
+                <p className="text-sm text-zinc-400">
+                  Know a developer who would love these tools? Share AI Business Factory.
+                </p>
+                <SocialShare
+                  url="https://forgestore.vercel.app"
+                  title="AI Business Factory — 8 developer tools, one ecosystem"
+                  description="Check out AI Business Factory: 8 developer tools built by AI agents. RulesForge, AgentAudit, CryptoPayKit, and more."
+                  hashtags={["AI", "DevTools", "SaaS"]}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
 
       {/* Footer */}
       <footer className="border-t border-zinc-800/50 bg-zinc-950">
         <div className="mx-auto max-w-6xl px-6 py-12">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+            <div>
+              <p className="text-sm font-semibold text-white mb-4">Products</p>
+              <ul className="space-y-2">
+                {products.slice(0, 4).map((p) => (
+                  <li key={p.name}>
+                    <a href={p.url} target="_blank" rel="noopener noreferrer" className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">
+                      {p.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-white mb-4">More Tools</p>
+              <ul className="space-y-2">
+                {products.slice(4).map((p) => (
+                  <li key={p.name}>
+                    <a href={p.url} target="_blank" rel="noopener noreferrer" className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">
+                      {p.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-white mb-4">Company</p>
+              <ul className="space-y-2">
+                <li><a href="/about" className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">About</a></li>
+                <li><a href="/contact" className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">Contact</a></li>
+                <li>
+                  <a href="https://github.com/keyflowcoreg" target="_blank" rel="noopener noreferrer" className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">
+                    GitHub
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-white mb-4">Legal</p>
+              <ul className="space-y-2">
+                <li><a href="/terms" className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">Terms of Service</a></li>
+                <li><a href="/privacy" className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">Privacy Policy</a></li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => window.dispatchEvent(new Event("open-cookie-banner"))}
+                    className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors cursor-pointer"
+                  >
+                    Cookie Settings
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="pt-8 border-t border-zinc-800/50 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-center md:text-left">
               <p className="text-sm font-semibold text-zinc-400">
                 AI Business Factory
@@ -382,19 +509,6 @@ export default function Home() {
                 8 developer tools. One ecosystem. Built by AI agents.
               </p>
             </div>
-            <div className="flex items-center gap-6 text-sm text-zinc-500">
-              <a href="/terms" className="hover:text-zinc-300 transition-colors">
-                Terms
-              </a>
-              <a href="/privacy" className="hover:text-zinc-300 transition-colors">
-                Privacy
-              </a>
-              <a href="mailto:support@forgestore.dev" className="hover:text-zinc-300 transition-colors">
-                Contact
-              </a>
-            </div>
-          </div>
-          <div className="mt-8 pt-6 border-t border-zinc-800/50 text-center">
             <p className="text-xs text-zinc-600">
               &copy; {new Date().getFullYear()} AI Business Factory. All rights reserved.
             </p>
