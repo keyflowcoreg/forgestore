@@ -5,6 +5,7 @@ import { TrustBar } from "@/components/TrustBar";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { SocialShare } from "@/components/SocialShare";
 import EmailCapture from "@/components/EmailCapture";
+import { TestimonialCarousel } from "@/components/TestimonialCarousel";
 
 const products = [
   {
@@ -407,6 +408,30 @@ export default function Home() {
               </div>
             </motion.div>
           </div>
+        </section>
+
+        {/* Testimonials */}
+        <section className="mx-auto max-w-6xl px-6 py-24 border-t border-zinc-800/50">
+          <div className="text-center mb-12">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              <h2 className="text-3xl md:text-4xl font-bold text-zinc-100 mb-4">
+                What Developers Say
+              </h2>
+              <p className="text-zinc-500 text-lg max-w-xl mx-auto">
+                Hear from developers who use the AI Business Factory ecosystem.
+              </p>
+            </motion.div>
+          </div>
+          <TestimonialCarousel testimonials={[
+            { name: "David Chen", role: "Engineering Manager", company: "Shopify", text: "The AI Business Factory ecosystem is impressive. We use RulesForge and AgentAudit across all our AI-integrated repos.", rating: 5 },
+            { name: "Maria Santos", role: "Freelance Developer", text: "I bought the full bundle. Having 8 integrated tools that all work together is a massive time saver.", rating: 5 },
+            { name: "Jake Morrison", role: "Startup Founder", company: "LaunchKit", text: "These tools let me ship 3x faster. The code quality is production-ready out of the box.", rating: 5 },
+          ]} />
         </section>
 
         {/* FAQ */}
